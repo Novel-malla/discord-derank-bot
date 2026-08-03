@@ -1,0 +1,95 @@
+{
+    "serverName": "Derank Services",
+    "roles": {
+        "owner": "1451177401127272553",
+        "mod": "1380292464979738746",
+        "member": "1380292928122912989",
+        "newbie": "1380294000312979476",
+        "notification": "1380488721945722890"
+    },
+    "streamers": [
+        {
+            "role": "1480494312541261839",
+            "name": "Misa",
+            "platform": "YouTube",
+            "url": "https://www.youtube.com/@WhiffedAgain0703"
+        },
+        {
+            "role": "1480493318960975974",
+            "name": "PB Playzz",
+            "platform": "YouTube",
+            "url": "https://www.youtube.com/@pbnx05bx"
+        },
+        {
+            "role": "1531409733234200726",
+            "name": "Hazel",
+            "platform": "Twitch",
+            "url": "https://www.twitch.tv/haeseulie"
+        }
+    ],
+    "guildId": "1380290210587217930",
+    "channels": {
+        "rules": "1380291130268061917",
+        "roles": "1380291093203124224",
+        "general": "1380290211241656322",
+        "streamers": "1380290858267447399",
+        "lfg": "1532290346166255686"
+    },
+    "selfRoles": [
+        {
+            "key": "valorant",
+            "id": "1532154333825601731",
+            "name": "Valorant",
+            "emoji": "🎯",
+            "type": "game",
+            "maxPartySize": 5
+        },
+        {
+            "key": "minecraft",
+            "id": "1532155205167218718",
+            "name": "Minecraft",
+            "emoji": "⛏️",
+            "type": "game",
+            "maxPartySize": 10
+        },
+        {
+            "key": "phasmophobia",
+            "id": "1532155444452266065",
+            "name": "Phasmophobia",
+            "emoji": "👻",
+            "type": "game",
+            "maxPartySize": 4
+        },
+        {
+            "key": "cs2",
+            "id": "1532155359903354953",
+            "name": "CS2",
+            "emoji": "🔫",
+            "type": "game",
+            "maxPartySize": 4
+        },
+        {
+            "key": "apexLegends",
+            "id": "1532155427964325998",
+            "name": "Apex Legends",
+            "emoji": "🛡️",
+            "type": "game",
+            "maxPartySize": 3
+        },
+        {
+            "key": "streamNotifications",
+            "id": "1380488721945722890",
+            "name": "Stream Notifications",
+            "type": "notification",
+            "emoji": "🎥"
+        }
+    ],
+    "lfg": {
+        "expireAfterMinutes": 30,
+        "cleanupIntervalMinutes": 5
+    },
+    "tickets": {
+        "categoryId": "1532871245241258145",
+        "moderatorRoleId": "1380292464979738746"
+    }
+}
