@@ -86,7 +86,9 @@
     ],
     "lfg": {
         "expireAfterMinutes": 30,
-        "cleanupIntervalMinutes": 5
+        "cleanupIntervalMinutes": 5,
+        "channelId": "1532290346166255686",
+        "moderatorRoleId": "1380292464979738746"
     },
     "tickets": {
         "categoryId": "1532871245241258145",

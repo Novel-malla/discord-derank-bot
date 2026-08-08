@@ -59,10 +59,36 @@ class LFGService {
                 ]
             });
 
+            console.log("✅ LFG message created");
+
             lfgRepository.updateMessageId(
                 lfgId,
                 message.id
             );
+
+            console.log("Creating thread...");
+
+            // Create a thread for this LFG
+            const thread = await message.startThread({
+                name: `${interaction.member.displayName}'s Group Chat`,
+                autoArchiveDuration: 1440 // 24 hours
+            });
+
+            // Save thread ID
+            lfgRepository.updateGroupChannelId(
+                lfgId,
+                thread.id
+            );
+
+            // Welcome message
+            await thread.send({
+                content:
+                    `👋 Welcome ${interaction.user}!\n\n` +
+                    `This is your private LFG group chat.\n` +
+                    `Anyone who joins this LFG will automatically be added here.`
+            });
+
+            console.log("Thread created:", thread.id);
 
             return message;
 

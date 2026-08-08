@@ -102,6 +102,19 @@ class LFGRepository {
 
     }
 
+    updateGroupChannelId(id, groupChannelId) {
+
+        db.prepare(`
+            UPDATE lfg_posts
+            SET group_channel_id = ?
+            WHERE id = ?
+        `).run(
+            groupChannelId,
+            id
+        );
+
+    }
+
 }
 
 module.exports = new LFGRepository();
