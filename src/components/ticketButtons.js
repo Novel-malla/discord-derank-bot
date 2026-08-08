@@ -26,15 +26,9 @@ function createTicketControls() {
 
             new ButtonBuilder()
                 .setCustomId("ticket_close")
-                .setLabel("Close")
+                .setLabel("Resolve Ticket")
                 .setEmoji("🔒")
-                .setStyle(ButtonStyle.Secondary),
-
-            new ButtonBuilder()
-                .setCustomId("ticket_delete")
-                .setLabel("Delete")
-                .setEmoji("🗑️")
-                .setStyle(ButtonStyle.Danger)
+                .setStyle(ButtonStyle.Success)
 
         );
 

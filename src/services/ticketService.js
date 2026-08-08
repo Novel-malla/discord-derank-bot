@@ -98,34 +98,60 @@ A moderator will respond shortly.`,
                 interaction.channel.id
             );
 
-        if (interaction.user.id !== ticket.user_id && !interaction.member.roles.cache.has(config.tickets.moderatorRoleId)) {
-            return interaction.reply({
-                ephemeral: true,
-                content: "❌ You don't have permission to close this ticket."
-            });
-        }
-
         if (!ticket) {
 
             return interaction.reply({
                 ephemeral: true,
-                content: "❌ This is not a ticket channel."
+                content: "❌ This is not a ticket thread."
+            });
+
+        }
+
+        const isModerator =
+            interaction.member.roles.cache.has(
+                config.tickets.moderatorRoleId
+            );
+
+        const isOwner =
+            interaction.user.id === ticket.user_id;
+
+        if (!isModerator && !isOwner) {
+
+            return interaction.reply({
+                ephemeral: true,
+                content: "❌ You don't have permission to close this ticket."
             });
 
         }
 
         ticketRepository.close(ticket.id);
 
-        await thread.setArchived(true);
-        await thread.setLocked(true);
-
         await interaction.message.edit({
             components: []
         });
 
         await interaction.reply({
-            content: "🔒 Ticket closed. A moderator can now delete it."
+            content: "🔒 Ticket resolved. Archiving thread..."
         });
+
+        setTimeout(async () => {
+
+            try {
+
+                await interaction.channel.setLocked(true);
+
+                await interaction.channel.setArchived(true);
+
+            } catch (error) {
+
+                console.error(
+                    "Failed to archive ticket:",
+                    error
+                );
+
+            }
+
+        }, 3000);
 
     }
 
