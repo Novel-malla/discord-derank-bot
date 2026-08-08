@@ -172,6 +172,19 @@ class LFGService {
             interaction.user.id
         );
 
+        const thread =
+            interaction.guild.channels.cache.get(
+                lfg.group_channel_id
+            );
+
+        if (thread) {
+
+            await thread.members.add(
+                interaction.user.id
+            );
+
+        }
+
         await this.updatePartyStatus(
             lfgId
         );
