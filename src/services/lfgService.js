@@ -172,15 +172,42 @@ class LFGService {
             interaction.user.id
         );
 
-        const thread =
-            interaction.guild.channels.cache.get(
-                lfg.group_channel_id
-            );
+        try {
 
-        if (thread) {
+            const thread =
+                await interaction.guild.channels.fetch(
+                    lfg.group_channel_id
+                );
 
-            await thread.members.add(
-                interaction.user.id
+            if (thread?.isThread()) {
+
+                await thread.members.add(
+                    interaction.user.id
+                );
+
+                await thread.send({
+                    content:
+                        `# 🎮 Party Chat
+
+                        Welcome ${interaction.user}!
+
+                        Use this thread to:
+
+                        • Share your Riot ID / Steam ID
+                        • Decide who's inviting
+                        • Coordinate before the match
+                        • Chat during queue
+
+                        Everyone who joins the LFG will automatically be added here.`
+                });
+
+            }
+
+        } catch (error) {
+
+            console.error(
+                "Failed to add member to thread:",
+                error
             );
 
         }
@@ -238,6 +265,34 @@ class LFGService {
             interaction.user.id
         );
 
+        try {
+
+            const thread =
+                await interaction.guild.channels.fetch(
+                    lfg.group_channel_id
+                );
+
+            if (thread?.isThread()) {
+
+                await thread.members.remove(
+                    interaction.user.id
+                );
+
+                await thread.send(
+                    `👋 ${interaction.user} left the party.`
+                );
+
+            }
+
+        } catch (error) {
+
+            console.error(
+                "Failed to remove member from thread:",
+                error
+            );
+
+        }
+
         await this.updatePartyStatus(
             lfgId
         );
@@ -276,6 +331,28 @@ class LFGService {
                 ephemeral: true,
                 content: validation.message
             });
+
+        }
+
+        try {
+
+            const thread =
+                await interaction.guild.channels.fetch(
+                    lfg.group_channel_id
+                );
+
+            if (thread) {
+
+                await thread.delete();
+
+            }
+
+        } catch (error) {
+
+            console.error(
+                "Failed to delete thread:",
+                error
+            );
 
         }
 
