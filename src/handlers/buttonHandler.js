@@ -14,10 +14,6 @@ async function buttonHandler(interaction) {
         return ticketService.close(interaction);
     }
 
-    if (interaction.customId === "ticket_delete") {
-        return ticketService.delete(interaction);
-    }
-
     if (interaction.customId.startsWith("lfg_join:")) {
         return lfgService.join(interaction);
     }

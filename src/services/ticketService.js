@@ -35,52 +35,22 @@ class TicketService {
             interaction.member
         );
 
-        const channel =
-            await interaction.guild.channels.create({
+        const supportChannel =
+            interaction.guild.channels.cache.get(
+                config.tickets.channelId
+            );
 
-                name: `ticket-${interaction.user.username}`,
+        const starterMessage =
+            await supportChannel.send({
+                content: `🎫 Ticket created by ${interaction.user}`
+            });
 
-                type: ChannelType.GuildText,
+        const thread =
+            await starterMessage.startThread({
 
-                parent: config.tickets.categoryId,
+                name: `Ticket • ${interaction.user.username}`,
 
-                permissionOverwrites: [
-
-                    {
-                        id: interaction.guild.roles.everyone.id,
-                        deny: [
-                            PermissionFlagsBits.ViewChannel
-                        ]
-                    },
-
-                    {
-                        id: interaction.user.id,
-                        allow: [
-                            PermissionFlagsBits.ViewChannel,
-                            PermissionFlagsBits.SendMessages,
-                            PermissionFlagsBits.ReadMessageHistory
-                        ]
-                    },
-
-                    {
-                        id: config.tickets.moderatorRoleId,
-                        allow: [
-                            PermissionFlagsBits.ViewChannel,
-                            PermissionFlagsBits.SendMessages,
-                            PermissionFlagsBits.ReadMessageHistory
-                        ]
-                    },
-
-                    {
-                        id: interaction.client.user.id,
-                        allow: [
-                            PermissionFlagsBits.ViewChannel,
-                            PermissionFlagsBits.SendMessages,
-                            PermissionFlagsBits.ManageChannels
-                        ]
-                    }
-
-                ]
+                autoArchiveDuration: 1440
 
             });
 
@@ -88,26 +58,25 @@ class TicketService {
 
             user_id: interaction.user.id,
 
-            channel_id: channel.id
+            channel_id: thread.id
 
         });
 
-        const embed =
-            new EmbedBuilder()
-                .setColor("Green")
-                .setTitle("🎫 Support Ticket")
-                .setDescription(
-                    `Welcome ${interaction.user}!\n\nA moderator will assist you shortly.`
-                );
+        await thread.send({
 
-        await channel.send({
+            content:
+                `${interaction.user}
 
-            embeds: [embed],
+# 🎫 Support Ticket
+
+Thanks for contacting us!
+
+Please describe your issue.
+
+A moderator will respond shortly.`,
 
             components: [
-
                 createTicketControls()
-
             ]
 
         });
@@ -116,7 +85,7 @@ class TicketService {
 
             ephemeral: true,
 
-            content: `✅ Your ticket has been created: ${channel}`
+            content: `✅ Your ticket has been created: ${thread}`
 
         });
 
@@ -147,9 +116,8 @@ class TicketService {
 
         ticketRepository.close(ticket.id);
 
-        await interaction.channel.setName(
-            `closed-${interaction.channel.name.replace("ticket-", "")}`
-        );
+        await thread.setArchived(true);
+        await thread.setLocked(true);
 
         await interaction.message.edit({
             components: []
@@ -158,41 +126,6 @@ class TicketService {
         await interaction.reply({
             content: "🔒 Ticket closed. A moderator can now delete it."
         });
-
-    }
-
-    async delete(interaction) {
-
-        const ticket =
-            ticketRepository.findByChannel(
-                interaction.channel.id
-            );
-
-        if (interaction.user.id !== ticket.user_id && !interaction.member.roles.cache.has(config.tickets.moderatorRoleId)) {
-            return interaction.reply({
-                ephemeral: true,
-                content: "❌ You don't have permission to close this ticket."
-            });
-        }
-
-        if (!ticket) {
-
-            return interaction.reply({
-                ephemeral: true,
-                content: "❌ This is not a ticket channel."
-            });
-
-        }
-
-        ticketRepository.delete(ticket.id);
-
-        await interaction.reply({
-            content: "🗑️ Ticket will be deleted in 30 seconds..."
-        });
-
-        setTimeout(async () => {
-            await interaction.channel.delete();
-        }, 30000);
 
     }
 

@@ -185,21 +185,9 @@ class LFGService {
                     interaction.user.id
                 );
 
-                await thread.send({
-                    content:
-                        `# 🎮 Party Chat
-
-                        Welcome ${interaction.user}!
-
-                        Use this thread to:
-
-                        • Share your Riot ID / Steam ID
-                        • Decide who's inviting
-                        • Coordinate before the match
-                        • Chat during queue
-
-                        Everyone who joins the LFG will automatically be added here.`
-                });
+                await thread.send(
+                    `🎉 ${interaction.user} joined the party!`
+                );
 
             }
 
@@ -336,10 +324,14 @@ class LFGService {
 
         try {
 
+            console.log("Stored thread ID:", lfg.group_channel_id);
+
             const thread =
                 await interaction.guild.channels.fetch(
                     lfg.group_channel_id
                 );
+
+            console.log(thread?.name);
 
             if (thread) {
 
