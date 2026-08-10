@@ -172,6 +172,8 @@ class LFGService {
             interaction.user.id
         );
 
+        lfgRepository.updateActivity(lfgId);
+
         try {
 
             const thread =
@@ -252,6 +254,8 @@ class LFGService {
             lfgId,
             interaction.user.id
         );
+
+        lfgRepository.updateActivity(lfgId);
 
         try {
 

@@ -12,7 +12,8 @@ class LFGRepository {
                 game,
                 rank,
                 max_players,
-                description
+                description,
+                last_activity_at
             )
             VALUES (
                 @guild_id,
@@ -21,7 +22,8 @@ class LFGRepository {
                 @game,
                 @rank,
                 @max_players,
-                @description
+                @description,
+                CURRENT_TIMESTAMP
             )
         `);
 
@@ -112,6 +114,29 @@ class LFGRepository {
             groupChannelId,
             id
         );
+
+    }
+
+    updateActivity(id) {
+
+        db.prepare(`
+            UPDATE lfg_posts
+            SET last_activity_at = CURRENT_TIMESTAMP
+            WHERE id = ?
+            AND status = 'OPEN'
+        `).run(id);
+
+    }
+
+    findInactive(hours = 2) {
+
+        return db.prepare(`
+            SELECT *
+            FROM lfg_posts
+            WHERE status = 'OPEN'
+            AND last_activity_at IS NOT NULL
+            AND last_activity_at <= datetime('now', ?)
+        `).all(`-${hours} hours`);
 
     }
 

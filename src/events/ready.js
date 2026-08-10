@@ -1,9 +1,14 @@
+const lfgCleanupService =
+    require("../services/lfgCleanupService");
+
 module.exports = {
     name: "ready",
     once: true,
 
     execute(client) {
         console.log(`${client.user.tag} is online!`);
+
+        lfgCleanupService.start(client);
 
         const guild = client.guilds.cache.first();
 
