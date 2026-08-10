@@ -6,6 +6,50 @@ const {
 
 const config = require("../../config/config.json");
 
+function getGameEntries() {
+    return Object.entries(config.gameRoles)
+        .filter(([name]) => name !== "messageId");
+}
+
+function buildDescription(guild) {
+
+    const lines = [
+        "Select the games you play by reacting below.",
+        "",
+        "You can select multiple games.",
+        "Remove your reaction to remove the role.",
+        ""
+    ];
+
+    for (const [name, game] of getGameEntries()) {
+
+        const role =
+            guild.roles.cache.get(game.roleId);
+
+        const count =
+            role ? role.members.size : 0;
+
+        const emoji =
+            guild.emojis.cache.get(game.emojiId);
+
+        const emojiText =
+            emoji
+                ? `${emoji}`
+                : `<:game:${game.emojiId}>`;
+
+        const displayName =
+            name
+                .replace(/([a-z])([A-Z])/g, "$1 $2")
+                .replace(/^\w/, c => c.toUpperCase());
+
+        lines.push(
+            `${emojiText} **${displayName}** — \`${count} players\``
+        );
+    }
+
+    return lines.join("\n");
+}
+
 module.exports = {
 
     data: new SlashCommandBuilder()
@@ -17,28 +61,31 @@ module.exports = {
 
     async execute(interaction) {
 
-        const embed = new EmbedBuilder()
-            .setColor("Blue")
-            .setTitle("🎮 What games do you play?")
-            .setDescription(
-                "React below to select the games you play.\n\n" +
-                "You can select multiple games.\n\n" +
-                "🔄 **Remove your reaction to remove the role.**"
-            );
+        const embed =
+            new EmbedBuilder()
+                .setColor("Blue")
+                .setTitle("🎮 What games do you play?")
+                .setDescription(
+                    buildDescription(interaction.guild)
+                )
+                .setFooter({
+                    text: "Game roles can be changed at any time."
+                });
 
         const message =
             await interaction.channel.send({
                 embeds: [embed]
             });
 
-        for (const [name, game] of Object.entries(
-            config.gameRoles
-        )) {
+        console.log(
+            `🎮 Game role panel message ID: ${message.id}`
+        );
 
-            // Skip the message ID
-            if (name === "messageId") {
-                continue;
-            }
+        console.log(
+            `🎮 Game role panel channel ID: ${interaction.channel.id}`
+        );
+
+        for (const [name, game] of getGameEntries()) {
 
             try {
 
@@ -47,7 +94,7 @@ module.exports = {
             } catch (error) {
 
                 console.error(
-                    `Failed to add ${name} emoji:`,
+                    `Failed to add ${name} reaction:`,
                     error
                 );
 

@@ -114,6 +114,10 @@ module.exports = {
 
             await member.roles.add(role);
 
+            await gameRoleService.refresh(
+                message.guild
+            );
+
             console.log(
                 `✅ Added @${role.name} to ${user.tag}`
             );

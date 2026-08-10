@@ -1,5 +1,7 @@
 const config =
     require("../config/config.json");
+const gameRoleService =
+    require("../services/gameRoleService");
 
 module.exports = {
 
@@ -77,6 +79,10 @@ module.exports = {
             }
 
             await member.roles.remove(role);
+
+            await gameRoleService.refresh(
+                message.guild
+            );
 
             console.log(
                 `✅ Removed @${role.name} from ${user.tag}`
