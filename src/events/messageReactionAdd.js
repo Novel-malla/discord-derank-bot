@@ -1,5 +1,7 @@
 const config =
     require("../config/config.json");
+const gameRoleService =
+    require("../services/gameRoleService");
 
 module.exports = {
 
