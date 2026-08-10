@@ -3,7 +3,8 @@ const initializeDatabase = require("./database/initDatabase");
 
 const {
     Client,
-    GatewayIntentBits
+    GatewayIntentBits,
+    Partials
 } = require("discord.js");
 
 const loadEvents = require("./handlers/eventHandler");
@@ -23,6 +24,12 @@ const client = new Client({
 
         GatewayIntentBits.GuildMessageReactions
 
+    ],
+
+    partials: [
+        Partials.Message,
+        Partials.Channel,
+        Partials.Reaction
     ]
 
 });

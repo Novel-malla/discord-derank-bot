@@ -1,4 +1,5 @@
-const config = require("../config/config.json");
+const config =
+    require("../config/config.json");
 
 module.exports = {
 
@@ -6,56 +7,90 @@ module.exports = {
 
     async execute(reaction, user) {
 
-        // Ignore bots
-        if (user.bot) {
-            return;
-        }
+        try {
 
-        // Fetch partial reactions
-        if (reaction.partial) {
-
-            try {
-
-                await reaction.fetch();
-
-            } catch (error) {
-
-                console.error(
-                    "Failed to fetch reaction:",
-                    error
-                );
-
+            // Ignore bots
+            if (user.bot) {
                 return;
             }
 
-        }
+            // Fetch partial reaction
+            if (reaction.partial) {
 
-        const message = reaction.message;
+                await reaction.fetch();
 
-        // Only process our game-role message
-        if (
-            !config.gameRoles.messageId ||
-            message.id !== config.gameRoles.messageId
-        ) {
-            return;
-        }
+            }
 
-        const emojiId = reaction.emoji.id;
+            const message =
+                reaction.message;
 
-        const gameEntry =
-            Object.entries(config.gameRoles)
-                .find(([name, game]) =>
-                    name !== "messageId" &&
-                    game.emojiId === emojiId
+            // Make sure we have the message
+            if (!message) {
+                return;
+            }
+
+            console.log(
+                `🎯 Reaction detected: ${reaction.emoji.name || reaction.emoji.id} by ${user.tag}`
+            );
+
+            console.log(
+                `Message ID: ${message.id}`
+            );
+
+            console.log(
+                `Configured Message ID: ${config.gameRoles.messageId}`
+            );
+
+            // Only process our game-role message
+            if (
+                message.id !==
+                config.gameRoles.messageId
+            ) {
+
+                console.log(
+                    "❌ Reaction is not from game-role panel."
                 );
 
-        if (!gameEntry) {
-            return;
-        }
+                return;
 
-        const [gameName, gameConfig] = gameEntry;
+            }
 
-        try {
+            const emojiId =
+                reaction.emoji.id;
+
+            console.log(
+                `Emoji ID: ${emojiId}`
+            );
+
+            const gameEntry =
+                Object.entries(
+                    config.gameRoles
+                ).find(
+                    ([name, game]) =>
+
+                        name !== "messageId" &&
+
+                        game.emojiId === emojiId
+                );
+
+            if (!gameEntry) {
+
+                console.log(
+                    "❌ Emoji not configured."
+                );
+
+                return;
+
+            }
+
+            const [
+                gameName,
+                gameConfig
+            ] = gameEntry;
+
+            console.log(
+                `🎮 Game detected: ${gameName}`
+            );
 
             const member =
                 await message.guild.members.fetch(
@@ -70,22 +105,23 @@ module.exports = {
             if (!role) {
 
                 console.error(
-                    `Role not found for ${gameName}: ${gameConfig.roleId}`
+                    `❌ Role not found: ${gameConfig.roleId}`
                 );
 
                 return;
+
             }
 
             await member.roles.add(role);
 
             console.log(
-                `🎮 Added ${role.name} to ${user.tag}`
+                `✅ Added @${role.name} to ${user.tag}`
             );
 
         } catch (error) {
 
             console.error(
-                `Failed to add ${gameName} role:`,
+                "❌ Game role reaction error:",
                 error
             );
 

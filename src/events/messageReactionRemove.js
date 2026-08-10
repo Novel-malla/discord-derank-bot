@@ -1,4 +1,5 @@
-const config = require("../config/config.json");
+const config =
+    require("../config/config.json");
 
 module.exports = {
 
@@ -6,53 +7,54 @@ module.exports = {
 
     async execute(reaction, user) {
 
-        if (user.bot) {
-            return;
-        }
+        try {
 
-        if (reaction.partial) {
-
-            try {
-
-                await reaction.fetch();
-
-            } catch (error) {
-
-                console.error(
-                    "Failed to fetch reaction:",
-                    error
-                );
-
+            if (user.bot) {
                 return;
             }
 
-        }
+            if (reaction.partial) {
 
-        const message = reaction.message;
+                await reaction.fetch();
 
-        if (
-            !config.gameRoles.messageId ||
-            message.id !== config.gameRoles.messageId
-        ) {
-            return;
-        }
+            }
 
-        const emojiId = reaction.emoji.id;
+            const message =
+                reaction.message;
 
-        const gameEntry =
-            Object.entries(config.gameRoles)
-                .find(([name, game]) =>
-                    name !== "messageId" &&
-                    game.emojiId === emojiId
+            if (!message) {
+                return;
+            }
+
+            if (
+                message.id !==
+                config.gameRoles.messageId
+            ) {
+                return;
+            }
+
+            const emojiId =
+                reaction.emoji.id;
+
+            const gameEntry =
+                Object.entries(
+                    config.gameRoles
+                ).find(
+                    ([name, game]) =>
+
+                        name !== "messageId" &&
+
+                        game.emojiId === emojiId
                 );
 
-        if (!gameEntry) {
-            return;
-        }
+            if (!gameEntry) {
+                return;
+            }
 
-        const [gameName, gameConfig] = gameEntry;
-
-        try {
+            const [
+                gameName,
+                gameConfig
+            ] = gameEntry;
 
             const member =
                 await message.guild.members.fetch(
@@ -67,22 +69,23 @@ module.exports = {
             if (!role) {
 
                 console.error(
-                    `Role not found for ${gameName}: ${gameConfig.roleId}`
+                    `❌ Role not found: ${gameConfig.roleId}`
                 );
 
                 return;
+
             }
 
             await member.roles.remove(role);
 
             console.log(
-                `🎮 Removed ${role.name} from ${user.tag}`
+                `✅ Removed @${role.name} from ${user.tag}`
             );
 
         } catch (error) {
 
             console.error(
-                `Failed to remove ${gameName} role:`,
+                "❌ Game role removal error:",
                 error
             );
 
