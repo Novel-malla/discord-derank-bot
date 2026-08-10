@@ -12,7 +12,9 @@ class GameRoleService {
         return Object.entries(
             config.gameRoles
         ).filter(
-            ([name]) => name !== "messageId"
+            ([name]) =>
+                name !== "messageId" &&
+                name !== "channelId"
         );
 
     }
@@ -34,25 +36,10 @@ class GameRoleService {
                     game.roleId
                 );
 
-            let count = 0;
-
-            if (role) {
-
-                try {
-
-                    count =
-                        role.members.size;
-
-                } catch (error) {
-
-                    console.error(
-                        `Failed to count ${name} members:`,
-                        error
-                    );
-
-                }
-
-            }
+            const count =
+                role
+                    ? role.members.size
+                    : 0;
 
             const emoji =
                 guild.emojis.cache.get(
@@ -66,14 +53,8 @@ class GameRoleService {
 
             const displayName =
                 name
-                    .replace(
-                        /([a-z])([A-Z])/g,
-                        "$1 $2"
-                    )
-                    .replace(
-                        /^\w/,
-                        c => c.toUpperCase()
-                    );
+                    .replace(/([a-z])([A-Z])/g, "$1 $2")
+                    .replace(/^\w/, c => c.toUpperCase());
 
             lines.push(
                 `${emojiText} **${displayName}** — \`${count} players\``
@@ -87,14 +68,30 @@ class GameRoleService {
 
     async refresh(guild) {
 
+        console.log("🔄 Refreshing game role panel...");
+
         const messageId =
             config.gameRoles.messageId;
 
         const channelId =
             config.gameRoles.channelId;
 
+        console.log(
+            `Message ID: ${messageId}`
+        );
+
+        console.log(
+            `Channel ID: ${channelId}`
+        );
+
         if (!messageId || !channelId) {
+
+            console.error(
+                "❌ Game role panel messageId or channelId is missing."
+            );
+
             return;
+
         }
 
         try {
@@ -105,13 +102,37 @@ class GameRoleService {
                 );
 
             if (!channel) {
+
+                console.error(
+                    "❌ Game role panel channel not found."
+                );
+
                 return;
+
             }
+
+            console.log(
+                `✅ Found channel: ${channel.name}`
+            );
 
             const message =
                 await channel.messages.fetch(
                     messageId
                 );
+
+            if (!message) {
+
+                console.error(
+                    "❌ Game role panel message not found."
+                );
+
+                return;
+
+            }
+
+            console.log(
+                "✅ Found game role panel message."
+            );
 
             const embed =
                 new EmbedBuilder()
@@ -131,10 +152,14 @@ class GameRoleService {
                 embeds: [embed]
             });
 
+            console.log(
+                "✅ Game role panel updated."
+            );
+
         } catch (error) {
 
             console.error(
-                "Failed to refresh game role panel:",
+                "❌ Failed to refresh game role panel:",
                 error
             );
 
