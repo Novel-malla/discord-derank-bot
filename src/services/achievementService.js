@@ -198,6 +198,77 @@ class AchievementService {
 
     }
 
+    getProgress(userId, achievementKey) {
+
+        const level =
+            userLevelRepository.findByUserId(
+                userId
+            );
+
+        const stats =
+            userStatsRepository.getByUserId(
+                userId
+            );
+
+        switch (achievementKey) {
+
+            case "first_words":
+
+                return {
+                    current: stats?.message_count || 0,
+                    required: 1
+                };
+
+            case "rising_star":
+
+                return {
+                    current: level?.level || 0,
+                    required: 5
+                };
+
+            case "veteran":
+
+                return {
+                    current: level?.level || 0,
+                    required: 10
+                };
+
+            case "elite":
+
+                return {
+                    current: level?.level || 0,
+                    required: 25
+                };
+
+            case "chatterbox":
+
+                return {
+                    current: stats?.message_count || 0,
+                    required: 100
+                };
+
+            case "social_butterfly":
+
+                return {
+                    current: stats?.message_count || 0,
+                    required: 500
+                };
+
+            case "community_pillar":
+
+                return {
+                    current: stats?.message_count || 0,
+                    required: 1000
+                };
+
+            default:
+
+                return null;
+
+        }
+
+    }
+
 }
 
 module.exports =

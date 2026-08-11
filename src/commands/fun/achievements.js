@@ -53,6 +53,31 @@ module.exports = {
 
                     }
 
+                    const progress =
+                        achievementService.getProgress(
+                            interaction.user.id,
+                            achievement.key
+                        );
+
+                    if (progress) {
+
+                        const percentage =
+                            Math.min(
+                                100,
+                                Math.floor(
+                                    (progress.current /
+                                        progress.required) * 100
+                                )
+                            );
+
+                        return (
+                            `🔒 ${achievement.emoji} **${achievement.name}**\n` +
+                            `> ${achievement.description}\n` +
+                            `> Progress: **${progress.current} / ${progress.required}** (${percentage}%)`
+                        );
+
+                    }
+
                     return (
                         `🔒 ${achievement.emoji} **${achievement.name}**\n` +
                         `> ${achievement.description}`
