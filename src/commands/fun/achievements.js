@@ -16,6 +16,12 @@ module.exports = {
 
     async execute(interaction) {
 
+        const newlyUnlocked =
+            await achievementService
+                .checkLevelAchievements(
+                    interaction.user.id
+                );
+
         const achievements =
             achievementService
                 .getUserAchievements(
@@ -65,6 +71,21 @@ module.exports = {
                 .setThumbnail(
                     interaction.user.displayAvatarURL()
                 );
+
+        if (newlyUnlocked.length > 0) {
+
+            embed.addFields({
+                name: "🎉 Newly Unlocked!",
+                value:
+                    newlyUnlocked
+                        .map(
+                            achievement =>
+                                `${achievement.emoji} **${achievement.name}**`
+                        )
+                        .join("\n")
+            });
+
+        }
 
         await interaction.reply({
             embeds: [embed]

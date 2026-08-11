@@ -1,6 +1,9 @@
 const achievementRepository =
     require("../repositories/achievementRepository");
 
+const userLevelRepository =
+    require("../repositories/userLevelRepository");
+
 const definitions =
     require("./achievementDefinitions");
 
@@ -71,6 +74,65 @@ class AchievementService {
 
         return achievementRepository
             .getUnlockedCount(userId);
+
+    }
+
+    async checkLevelAchievements(userId) {
+
+        const level =
+            userLevelRepository.findByUserId(
+                userId
+            );
+
+        if (!level) {
+            return [];
+        }
+
+        const achievements = [];
+
+        if (level.level >= 5) {
+
+            const achievement =
+                await this.unlock(
+                    userId,
+                    "rising_star"
+                );
+
+            if (achievement) {
+                achievements.push(achievement);
+            }
+
+        }
+
+        if (level.level >= 10) {
+
+            const achievement =
+                await this.unlock(
+                    userId,
+                    "veteran"
+                );
+
+            if (achievement) {
+                achievements.push(achievement);
+            }
+
+        }
+
+        if (level.level >= 25) {
+
+            const achievement =
+                await this.unlock(
+                    userId,
+                    "elite"
+                );
+
+            if (achievement) {
+                achievements.push(achievement);
+            }
+
+        }
+
+        return achievements;
 
     }
 
