@@ -115,7 +115,7 @@ module.exports = {
                     {
                         name: "🏆 Achievements",
                         value:
-                            `${stats.achievements} / 9`,
+                            `${stats.achievements} / ${stats.totalAchievements}`,
                         inline: true
                     }
 

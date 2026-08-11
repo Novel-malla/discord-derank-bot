@@ -39,6 +39,9 @@ class StatsService {
                 userId
             );
 
+        const totalAchievements =
+            achievementRepository.findAll().length;
+
         return {
 
             level: level?.level || 1,
@@ -52,7 +55,9 @@ class StatsService {
 
             lfgJoined,
 
-            achievements
+            achievements,
+
+            totalAchievements
 
         };
 
