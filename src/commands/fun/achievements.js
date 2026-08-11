@@ -16,11 +16,17 @@ module.exports = {
 
     async execute(interaction) {
 
-        const newlyUnlocked =
-            await achievementService
+        const newlyUnlocked = [
+            ...await achievementService
                 .checkLevelAchievements(
                     interaction.user.id
-                );
+                ),
+
+            ...await achievementService
+                .checkMessageAchievements(
+                    interaction.user.id
+                )
+        ];
 
         const achievements =
             achievementService
