@@ -11,6 +11,7 @@ const createLFGButtons = require("../components/lfgButtons");
 const lfgValidationService = require("./lfgValidationService");
 const lfgMessageService = require("./lfgMessageService");
 const createLFGListEmbed = require("../embeds/lfgListEmbed");
+const achievementService = require("./achievementService");
 
 class LFGService {
 
@@ -58,6 +59,21 @@ class LFGService {
                     createLFGButtons(lfgId)
                 ]
             });
+
+            const achievement =
+                await achievementService.unlock(
+                    interaction.user.id,
+                    "party_starter"
+                );
+
+            if (achievement) {
+
+                await channel.send({
+                    content:
+                        `🏆 ${interaction.member} unlocked **${achievement.emoji} ${achievement.name}**!`
+                });
+
+            }
 
             console.log("✅ LFG message created");
 
@@ -173,6 +189,30 @@ class LFGService {
         );
 
         lfgRepository.updateActivity(lfgId);
+
+        const joinCount =
+            lfgMemberRepository.getUserJoinCount(
+                interaction.user.id
+            );
+
+        if (joinCount >= 10) {
+
+            const achievement =
+                await achievementService.unlock(
+                    interaction.user.id,
+                    "team_player"
+                );
+
+            if (achievement) {
+
+                await interaction.channel.send({
+                    content:
+                        `🏆 ${interaction.user} unlocked **${achievement.emoji} ${achievement.name}**!`
+                });
+
+            }
+
+        }
 
         try {
 
