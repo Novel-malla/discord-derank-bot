@@ -4,6 +4,9 @@ const userLevelService =
 const achievementService =
     require("../services/achievementService");
 
+const userStatsRepository =
+    require("../repositories/userStatsRepository");
+
 module.exports = {
 
     name: "messageCreate",
@@ -23,6 +26,27 @@ module.exports = {
         // Ignore commands
         if (message.content.startsWith("/")) {
             return;
+        }
+
+        // Track message statistics
+        userStatsRepository.incrementMessages(
+            message.author.id
+        );
+
+        // Check message achievements
+        const newAchievements =
+            await achievementService
+                .checkMessageAchievements(
+                    message.author.id
+                );
+
+        for (const achievement of newAchievements) {
+
+            await message.channel.send({
+                content:
+                    `🏆 ${message.member} unlocked **${achievement.emoji} ${achievement.name}**!`
+            });
+
         }
 
         // 🏆 First message achievement

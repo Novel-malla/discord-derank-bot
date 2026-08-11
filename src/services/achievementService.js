@@ -7,6 +7,9 @@ const userLevelRepository =
 const definitions =
     require("./achievementDefinitions");
 
+const userStatsRepository =
+    require("../repositories/userStatsRepository");
+
 class AchievementService {
 
     initialize() {
@@ -124,6 +127,65 @@ class AchievementService {
                 await this.unlock(
                     userId,
                     "elite"
+                );
+
+            if (achievement) {
+                achievements.push(achievement);
+            }
+
+        }
+
+        return achievements;
+
+    }
+
+    async checkMessageAchievements(userId) {
+
+        const stats =
+            userStatsRepository.getByUserId(
+                userId
+            );
+
+        if (!stats) {
+            return [];
+        }
+
+        const achievements = [];
+
+        if (stats.message_count >= 100) {
+
+            const achievement =
+                await this.unlock(
+                    userId,
+                    "chatterbox"
+                );
+
+            if (achievement) {
+                achievements.push(achievement);
+            }
+
+        }
+
+        if (stats.message_count >= 500) {
+
+            const achievement =
+                await this.unlock(
+                    userId,
+                    "social_butterfly"
+                );
+
+            if (achievement) {
+                achievements.push(achievement);
+            }
+
+        }
+
+        if (stats.message_count >= 1000) {
+
+            const achievement =
+                await this.unlock(
+                    userId,
+                    "community_pillar"
                 );
 
             if (achievement) {
