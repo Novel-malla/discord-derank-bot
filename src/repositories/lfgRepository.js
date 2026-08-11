@@ -140,6 +140,32 @@ class LFGRepository {
 
     }
 
+    getUserCreatedCount(userId) {
+
+        return db.prepare(`
+            SELECT COUNT(*) AS count
+            FROM lfg_posts
+            WHERE host_id = ?
+        `).get(userId).count;
+
+    }
+
+    getUserJoinedCount(userId) {
+
+        return db.prepare(`
+            SELECT COUNT(*) AS count
+            FROM lfg_members lm
+            INNER JOIN lfg_posts lp
+                ON lm.lfg_id = lp.id
+            WHERE lm.user_id = ?
+            AND lp.host_id != ?
+        `).get(
+            userId,
+            userId
+        ).count;
+
+    }
+
 }
 
 module.exports = new LFGRepository();
