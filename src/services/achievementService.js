@@ -10,6 +10,9 @@ const definitions =
 const userStatsRepository =
     require("../repositories/userStatsRepository");
 
+const lfgMemberRepository =
+    require("../repositories/lfgMemberRepository");
+
 class AchievementService {
 
     initialize() {
@@ -259,6 +262,16 @@ class AchievementService {
                 return {
                     current: stats?.message_count || 0,
                     required: 1000
+                };
+
+            case "team_player":
+
+                return {
+                    current:
+                        lfgMemberRepository.getUserJoinCount(
+                            userId
+                        ),
+                    required: 10
                 };
 
             default:
