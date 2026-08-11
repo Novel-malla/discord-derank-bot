@@ -1,5 +1,6 @@
 require("dotenv").config();
 const initializeDatabase = require("./database/initDatabase");
+const achievementService = require("./services/achievementService");
 
 const {
     Client,
@@ -35,6 +36,7 @@ const client = new Client({
 });
 
 initializeDatabase();
+achievementService.initialize();
 
 loadCommands(client);
 loadEvents(client);

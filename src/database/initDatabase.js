@@ -5,6 +5,7 @@ const lfgPostsSchema = require("./schema/lfgPosts");
 const lfgMembersSchema = require("./schema/lfgMembers");
 const userLevels = require("./schema/userLevels");
 const ticketsSchema = require("./schema/tickets");
+const achievementsSchema = require("./schema/achievements");
 
 function initializeDatabase() {
 
@@ -22,6 +23,9 @@ function initializeDatabase() {
 
     console.log("Creating tickets...");
     db.exec(ticketsSchema);
+
+    console.log("Creating achievements...");
+    db.exec(achievementsSchema);
 
     console.log("✅ Database initialized.");
 }
